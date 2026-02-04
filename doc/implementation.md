@@ -54,6 +54,11 @@
   - 关键可复用片段（成功子路径）
 - **用途**：为后续任务提供可检索的成功轨迹。
 
+### 8. 收尾阶段
+- 如果大模型认为任务已经完成，则程序结束
+- 如果大模型认为任务没有完成，则回到**第2阶段**
+
+
 ---
 
 # 阶段间数据传输汇总（内容 + 格式）
@@ -100,14 +105,15 @@
 ### 4 → 5（记忆检索阶段 → 思考阶段）
 - **数据内容**：相关记忆轨迹、可复用操作模式、规避提示
 - **数据格式（JSON）**：
-  - `memory_hits`: Array<{ `task_text`: string, `steps`: Array<object>, `success`: boolean }>（历史任务检索结果）
-    - `task_text`: string（历史任务文本）
-    - `steps`: Array<object>（历史动作序列）
-    - `success`: boolean（是否成功完成）
-  - `action_patterns`: Array<{ `name`: string, `steps`: Array<object> }>（可复用操作模板）
-    - `name`: string（模式名称，如“搜索-提交”）
-    - `steps`: Array<object>（模式步骤序列）
   - `avoidance`: Array<string>（规避提示列表，如常见失败原因）
+  - `memory_hits`: Array<{ `task_text`: string, `steps`: Array<'object'>, `success`: boolean }>（历史任务检索结果）
+    - `task_text`: string（历史任务文本）
+    - `steps`: Array<'object'>（历史动作序列）
+    - `success`: boolean（是否成功完成）
+  - `action_patterns`: Array<{ `name`: string, `steps`: Array<'object'> }>（可复用操作模板）
+    - `name`: string（模式名称，如“搜索-提交”）
+    - `steps`: Array<'object'>（模式步骤序列）
+
 
 ### 5 → 6（思考阶段 → 行动阶段）
 - **数据内容**：模型输出的动作指令与状态判定
@@ -129,7 +135,7 @@
       - `success`: boolean（是否成功）
       - `error`?: string（失败原因）
     - `timestamp`: string（执行时间）
-  - `task_summary`: { `task_text`: string, `final_status`: string, `steps`: Array<object> }（任务级汇总）
+  - `task_summary`: { `task_text`: string, `final_status`: string, `steps`: Array<'object'> }（任务级汇总）
     - `task_text`: string（任务文本）
     - `final_status`: string（最终状态，如 success/failed）
-    - `steps`: Array<object>（完整动作序列）
+    - `steps`: Array<'object'>（完整动作序列）
